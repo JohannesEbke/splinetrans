@@ -1,0 +1,8 @@
+splinetrans
+-----------
+
+Splinetrans is a python package to transform points and cubic splines
+using a transformation defined by one or more cubic splines.
+
+tl;dr: you can overlay splines on other splines
+    
