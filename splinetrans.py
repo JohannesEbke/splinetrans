@@ -5,8 +5,9 @@ from bisect import bisect_left, bisect_right
 
 class Spline(object):
     def __init__(self, p0, p1, p2, p3, N = 100):
-        """ Create a spline given the start point,
+        """ Create a spline given the start point, 
         two control points and the end point"""
+        assert not (p0 == p1 == p2 == p3)
         self.points = (p0, p1, p2, p3)
         self.N = N
         self.sampled = False
@@ -44,6 +45,13 @@ class Spline(object):
         dx = 3*A*t**2 + 2*B*t + C
         dy = 3*E*t**2 + 2*F*t + G
         d = sqrt(dx**2 + dy**2)
+        if d/self.length < 1e-8:
+            if t < 0.5:
+                #print "t = ", t, "increased"
+                return self.get_point_perp(t + 0.001)
+            else:
+                #print "t = ", t, "decreased"
+                return self.get_point_perp(t - 0.001)
         return x, y, -dy/d, dx/d
 
     def get_point_tan_perp(self, t):
@@ -53,6 +61,13 @@ class Spline(object):
         dx = 3*A*t**2 + 2*B*t + C
         dy = 3*E*t**2 + 2*F*t + G
         d = sqrt(dx**2 + dy**2)
+        if d/self.length < 1e-8:
+            if t < 0.5:
+                #print "t = ", t, "increased"
+                return self.get_point_tan_perp(t + 0.001)
+            else:
+                #print "t = ", t, "decreased"
+                return self.get_point_tan_perp(t - 0.001)
         return x, y, dx/d, dy/d, -dy/d, dx/d
 
     @property
@@ -123,7 +138,6 @@ class SplineLine(object):
         cum = self.cumulative = [0]
         for spline in self.splines:
             cum.append(cum[-1] + spline.length)
-
 
     def find_spline_at(self, s):
         if not self.cumulative:
