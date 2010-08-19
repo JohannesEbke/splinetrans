@@ -120,7 +120,16 @@ class Spline(object):
         s1T = self.transform_x_point(spline.points[0][0],spline.points[1])
         s2T = self.transform_x_point(spline.points[3][0],spline.points[2])
         return Spline(s0T, s1T, s2T, s3T)
-
+    
+    def get_clipped(self, clip_length):
+        x = self.length - clip_length
+        p0, p1 = self.points[0], self.points[1]
+        p2 = list(self.points[2])
+        p3 = self.transform_point((x, 0))
+        for i in (0,1):
+            p2[i] += p3[i] - self.points[3][i]
+        return Spline(p0, p1, tuple(p2), p3, self.N)
+        
     @property
     def svg_path_data(self):
         return ("M %.5f %.5f C " + "%.f "*6) % reduce(tuple.__add__, self.points)
