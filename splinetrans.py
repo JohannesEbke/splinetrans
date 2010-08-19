@@ -121,6 +121,10 @@ class Spline(object):
         s2T = self.transform_x_point(spline.points[3][0],spline.points[2])
         return Spline(s0T, s1T, s2T, s3T)
     
+    def transform_splineline(self, splineline):
+        new_splines = [self.transform_spline(s) for s in splineline.splines]
+        return SplineLine(new_splines)
+    
     def get_clipped(self, clip_length):
         x = self.length - clip_length
         p0, p1 = self.points[0], self.points[1]
@@ -169,6 +173,10 @@ class SplineLine(object):
         s1T = self.transform_x_point(spline.points[0][0],spline.points[1])
         s2T = self.transform_x_point(spline.points[3][0],spline.points[2])
         return Spline(s0T, s1T, s2T, s3T)
+
+    def transform_splineline(self, splineline):
+        new_splines = [self.transform_spline(s) for s in splineline.splines]
+        return SplineLine(new_splines)
 
     @property
     def length(self):
